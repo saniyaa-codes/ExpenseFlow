@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* =================================================================
+     EXPENSEFLOW SOLID COLOR DESIGN SYSTEM (STRICT NO-GRADIENTS)
+     ================================================================= */
+  
+  /* Canvas & Surface */
+  --bg-app: #F7F7F5;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #EFEFEA;
+  --bg-muted: #F4F4F5;
+  --bg-hover: #F0F0EE;
+
+  /* Brand & Primary Ink */
+  --color-primary: #1F2937;
+  --color-primary-hover: #111827;
+
+  /* Interactive Accent */
+  --color-accent: #2563EB;
+  --color-accent-hover: #1D4ED8;
+  --color-accent-subtle: #EFF6FF;
+  --color-accent-border: #BFDBFE;
+
+  /* Typography / Text */
+  --text-main: #171717;
+  --text-secondary: #525252;
+  --text-muted: #737373;
+  --text-inverse: #FFFFFF;
+
+  /* Borders & Dividers */
+  --border-main: #D4D4D4;
+  --border-subtle: #E5E5E5;
+  --border-focus: #2563EB;
+
+  /* Financial Status Colors */
+  --color-success: #166534;
+  --color-success-bg: #DCFCE7;
+  --color-success-border: #86EFAC;
+
+  --color-warning: #92400E;
+  --color-warning-bg: #FEF3C7;
+  --color-warning-border: #FCD34D;
+
+  --color-danger: #991B1B;
+  --color-danger-bg: #FEE2E2;
+  --color-danger-border: #FCA5A5;
+
+  --color-income: #166534;
+  --color-expense: #991B1B;
+
+  /* =================================================================
+     TYPOGRAPHY SCALE
+     ================================================================= */
+  --font-family-base: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-hero: 40px;
+  --font-size-h1: 30px;
+  --font-size-h2: 24px;
+  --font-size-h3: 18px;
+  --font-size-body: 15px;
+  --font-size-label: 14px;
+  --font-size-meta: 12px;
+
+  /* =================================================================
+     SPACING & LAYOUT SCALE
+     ================================================================= */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 72px;
+  --header-height: 68px;
+  --max-content-width: 1280px;
+
+  /* Crisp solid shadows (no heavy fuzzy multi-layer blur) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] {
+  --bg-app: #0F172A;
+  --bg-surface: #1E293B;
+  --bg-subtle: #334155;
+  --bg-muted: #1E293B;
+  --bg-hover: #273549;
+
+  --color-primary: #F8FAFC;
+  --color-primary-hover: #E2E8F0;
+
+  --color-accent: #3B82F6;
+  --color-accent-hover: #60A5FA;
+  --color-accent-subtle: #1E3A8A;
+  --color-accent-border: #2563EB;
+
+  --text-main: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-inverse: #0F172A;
+
+  --border-main: #334155;
+  --border-subtle: #1E293B;
+  --border-focus: #3B82F6;
+
+  --color-success: #34D399;
+  --color-success-bg: rgba(5, 150, 105, 0.2);
+  --color-success-border: #059669;
+
+  --color-warning: #FBBF24;
+  --color-warning-bg: rgba(217, 119, 6, 0.2);
+  --color-warning-border: #D97706;
+
+  --color-danger: #F87171;
+  --color-danger-bg: rgba(220, 38, 38, 0.2);
+  --color-danger-border: #DC2626;
+
+  --color-income: #34D399;
+  --color-expense: #F87171;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}

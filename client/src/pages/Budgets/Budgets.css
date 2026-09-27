@@ -1,0 +1,266 @@
+.ef-budgets-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.ef-budget-card {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.ef-bcard-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ef-bcard-title {
+  font-size: var(--font-size-h3);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ef-bcard-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ef-bcard-amounts {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ef-bcard-spent,
+.ef-bcard-limit {
+  display: flex;
+  flex-direction: column;
+}
+
+.ef-bcard-spent span,
+.ef-bcard-limit span {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.ef-bcard-spent strong {
+  font-size: 16px;
+  color: var(--text-main);
+}
+
+.ef-bcard-limit strong {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.ef-bcard-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.ef-empty-budgets-card {
+  padding: var(--spacing-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.ef-empty-budgets-card h4 {
+  font-size: 16px;
+  color: var(--text-main);
+  margin-top: 8px;
+}
+
+.ef-empty-budgets-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 440px;
+  margin-bottom: 12px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* RECURRING MONTHLY INCOME & BUDGET SECTION */
+/* -------------------------------------------------------------------------- */
+.ef-recurring-section {
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.ef-recurring-section:hover {
+  border-color: var(--border-focus);
+}
+
+.ef-recurring-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.ef-recurring-title-wrap {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+  flex: 1;
+  min-width: 280px;
+}
+
+.ef-recurring-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ef-recurring-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.ef-recurring-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.ef-recurring-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 600px;
+  line-height: 1.4;
+}
+
+.ef-recurring-top-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.ef-recurring-details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.ef-recurring-detail-item {
+  background: var(--bg-app);
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ef-detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.ef-detail-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ef-detail-income {
+  color: var(--color-income, #10b981);
+}
+
+.ef-detail-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ef-recurring-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md) 0 0 0;
+  margin-top: var(--spacing-sm);
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.ef-recurring-empty-content {
+  flex: 1;
+}
+
+.ef-recurring-empty-content strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.ef-recurring-empty-content p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.ef-section-divider {
+  margin-bottom: var(--spacing-md);
+}
+
+.ef-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+@media (max-width: 1024px) {
+  .ef-budgets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ef-recurring-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .ef-budgets-grid {
+    grid-template-columns: 1fr;
+  }
+  .ef-recurring-details-grid {
+    grid-template-columns: 1fr;
+  }
+  .ef-recurring-empty-state {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

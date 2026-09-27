@@ -1,0 +1,93 @@
+﻿.ef-strength-meter {
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.ef-strength-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-meta);
+}
+
+.ef-strength-label {
+  color: var(--text-muted);
+}
+
+.ef-strength-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  height: 4px;
+}
+
+.ef-strength-bar {
+  border-radius: var(--radius-full);
+  transition: background-color 0.2s ease;
+}
+
+.ef-criteria-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.ef-criteria-list li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.ef-criteria-list li.valid {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.ef-currency-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.ef-select-field {
+  width: 100%;
+  height: 42px;
+  padding: 0 var(--spacing-sm);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  color: var(--text-main);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  outline: none;
+  cursor: pointer;
+}
+
+.ef-select-field:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-subtle);
+}
+
+.ef-auth-success-card {
+  text-align: center;
+  align-items: center;
+}
+
+.ef-success-icon-wrap {
+  width: 64px;
+  height: 64px;
+  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
+}

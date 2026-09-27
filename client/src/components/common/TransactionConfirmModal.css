@@ -1,0 +1,71 @@
+.ef-confirm-box {
+  background: var(--bg-subtle, #f8fafc);
+  border: 1.5px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-md, 8px);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+[data-theme='dark'] .ef-confirm-box {
+  background: var(--bg-surface-raised, #1e293b);
+  border-color: var(--border-main, #334155);
+}
+
+.ef-confirm-banner {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.ef-confirm-subtext {
+  font-size: 0.875rem;
+  color: var(--text-muted, #64748b);
+}
+
+.ef-confirm-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: var(--radius-md, 8px);
+  padding: 1rem;
+}
+
+[data-theme='dark'] .ef-confirm-details {
+  background: var(--bg-surface, #0f172a);
+  border-color: var(--border-subtle, #334155);
+}
+
+.ef-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.ef-confirm-label {
+  color: var(--text-muted, #64748b);
+  font-weight: 500;
+}
+
+.ef-confirm-value {
+  color: var(--text-main, #0f172a);
+  font-weight: 600;
+}
+
+.ef-confirm-amount-large {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.ef-confirm-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
+}

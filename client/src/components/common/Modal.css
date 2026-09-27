@@ -1,0 +1,79 @@
+﻿.ef-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(17, 24, 39, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  z-index: 999;
+  animation: ef-fade-in 0.15s ease-out;
+}
+
+.ef-modal-container {
+  width: 100%;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: ef-scale-up 0.15s ease-out;
+}
+
+.ef-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ef-modal-title {
+  font-size: var(--font-size-h3);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ef-modal-close {
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ef-modal-close:hover {
+  background-color: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+.ef-modal-body {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  color: var(--text-secondary);
+}
+
+.ef-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--bg-muted);
+}
+
+@keyframes ef-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ef-scale-up {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

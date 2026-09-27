@@ -1,0 +1,44 @@
+﻿.ef-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ef-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+}
+
+.ef-card__title {
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.ef-card__subtitle {
+  font-size: var(--font-size-meta);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.ef-card__body {
+  padding: var(--spacing-lg);
+  flex: 1;
+}
+
+.ef-card__footer {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--bg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

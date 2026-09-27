@@ -1,0 +1,183 @@
+/* ExpenseFlow Settings Styles */
+
+.ef-settings-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  align-items: start;
+}
+
+.ef-settings-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.ef-settings-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+}
+
+.ef-card-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ef-card-icon-title h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.ef-card-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: block;
+  margin-top: 2px;
+}
+
+.ef-profile-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.ef-pinfo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 14px;
+}
+
+.ef-pinfo-row:last-child {
+  border-bottom: none;
+}
+
+.ef-pinfo-row span {
+  color: var(--text-secondary);
+}
+
+.ef-pinfo-row strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* Appearance & Theme Toggle */
+.ef-appearance-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 6px;
+}
+
+.ef-appearance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ef-appearance-row:last-child {
+  border-bottom: none;
+}
+
+.ef-appearance-row strong {
+  font-size: 14px;
+  color: var(--text-main);
+  display: block;
+}
+
+.ef-appearance-row p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.ef-theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-hover);
+  color: var(--text-main);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ef-theme-toggle-btn:hover {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent-border);
+  color: var(--color-accent);
+}
+
+.ef-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ef-toggles-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ef-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+}
+
+.ef-toggle-row:last-child {
+  border-bottom: none;
+}
+
+.ef-toggle-row strong {
+  font-size: 14px;
+  color: var(--text-main);
+  display: block;
+}
+
+.ef-toggle-row p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.ef-toggle-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.ef-settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .ef-settings-layout {
+    grid-template-columns: 1fr;
+  }
+}

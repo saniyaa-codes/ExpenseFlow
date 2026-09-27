@@ -1,0 +1,133 @@
+﻿.ef-auth-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.ef-auth-header {
+  text-align: left;
+}
+
+.ef-auth-title {
+  font-size: var(--font-size-h2);
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: var(--spacing-xxs);
+}
+
+.ef-auth-subtitle {
+  font-size: var(--font-size-label);
+  color: var(--text-secondary);
+}
+
+.ef-auth-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-meta);
+  font-weight: 500;
+}
+
+.ef-auth-alert--error {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+.ef-auth-alert--success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+}
+
+.ef-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.ef-password-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.ef-password-toggle-btn {
+  position: absolute;
+  right: var(--spacing-sm);
+  top: 36px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.ef-password-toggle-btn:hover {
+  color: var(--text-main);
+}
+
+.ef-auth-form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-meta);
+}
+
+.ef-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.ef-checkbox-label input[type="checkbox"] {
+  accent-color: var(--color-accent);
+  width: 15px;
+  height: 15px;
+}
+
+.ef-auth-link {
+  color: var(--color-accent);
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.ef-auth-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.ef-auth-divider {
+  position: relative;
+  text-align: center;
+  margin: var(--spacing-xs) 0;
+}
+
+.ef-auth-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--border-main);
+}
+
+.ef-auth-divider span {
+  position: relative;
+  background-color: var(--bg-surface);
+  padding: 0 var(--spacing-sm);
+  font-size: var(--font-size-meta);
+  color: var(--text-muted);
+}
+
+.ef-auth-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}

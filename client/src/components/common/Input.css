@@ -1,0 +1,80 @@
+﻿.ef-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  width: 100%;
+}
+
+.ef-input-label {
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.ef-input-required {
+  color: var(--color-danger);
+  margin-left: 2px;
+}
+
+.ef-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ef-input-icon {
+  position: absolute;
+  left: var(--spacing-sm);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.ef-input-field {
+  width: 100%;
+  height: 42px;
+  padding: 0 var(--spacing-sm);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  color: var(--text-main);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ef-input-field--has-icon {
+  padding-left: 38px;
+}
+
+.ef-input-field:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-subtle);
+}
+
+.ef-input-field:disabled {
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Error State */
+.ef-input-group--error .ef-input-field {
+  border-color: var(--color-danger);
+}
+
+.ef-input-group--error .ef-input-field:focus {
+  box-shadow: 0 0 0 3px var(--color-danger-bg);
+}
+
+.ef-input-error {
+  font-size: var(--font-size-meta);
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+.ef-input-helper {
+  font-size: var(--font-size-meta);
+  color: var(--text-muted);
+}

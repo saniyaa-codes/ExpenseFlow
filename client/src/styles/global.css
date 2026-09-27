@@ -1,0 +1,124 @@
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  color: var(--text-main);
+  background-color: var(--bg-app);
+}
+
+/* Typography Utilities */
+h1, .text-h1 {
+  font-size: var(--font-size-h1);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+h2, .text-h2 {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+h3, .text-h3 {
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-main);
+}
+
+p, .text-body {
+  font-size: var(--font-size-body);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.text-meta {
+  font-size: var(--font-size-meta);
+  color: var(--text-muted);
+}
+
+.text-income {
+  color: var(--color-income) !important;
+  font-weight: 600;
+}
+
+.text-expense {
+  color: var(--color-expense) !important;
+  font-weight: 600;
+}
+
+/* Common Container */
+.container {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+/* Crisp Surfaces (Solid colors with clean 1px border) */
+.surface-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  width: 100%;
+  margin: var(--spacing-md) 0;
+}
+
+/* Transitions */
+.transition-smooth {
+  transition: all 0.15s ease-in-out;
+}
+
+/* Metric Summary Card in Income and Expense sections */
+.ef-metric-card {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+}
+
+.ef-metric-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ef-metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ef-metric-val {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+

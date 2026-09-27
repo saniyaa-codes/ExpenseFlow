@@ -1,0 +1,82 @@
+﻿.ef-goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.ef-goal-card {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.ef-gcard-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ef-gcard-title {
+  font-size: var(--font-size-h3);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ef-gcard-category {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ef-gcard-amounts {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-xs) 0;
+}
+
+.ef-gcard-amounts span {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.ef-gcard-amounts strong {
+  font-size: 16px;
+  color: var(--text-main);
+}
+
+.ef-gcard-meta-box {
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ef-gmeta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+}
+
+.ef-gcard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+@media (max-width: 1024px) {
+  .ef-goals-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .ef-goals-grid {
+    grid-template-columns: 1fr;
+  }
+}
