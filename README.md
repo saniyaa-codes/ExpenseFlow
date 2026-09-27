@@ -1,6 +1,6 @@
 # ExpenseFlow — Secure AI-Powered Personal Finance Management System
 
-A production-ready full-stack web application designed for students and young professionals to manage personal cashflow, budget discipline, and savings targets. Built using the **MERN** architecture (MongoDB, Express.js, React.js, Node.js) with native CSS variables, Recharts, and Google Gemini AI conversational grounding.
+A  full-stack web application designed for students and young professionals to manage personal cashflow, budget discipline, and savings targets. Built using the **MERN** architecture (MongoDB, Express.js, React.js, Node.js) with native CSS variables, Recharts, and Google Gemini AI conversational grounding.
 
 ---
 
@@ -321,31 +321,3 @@ ExpenseFlow is configured for unified zero-config deployment on cloud hosts like
    - `SMTP_USER` / `SMTP_PASS` *(optional)*
 5. Deploy. The backend automatically detects the built `client/dist` directory and serves the client application with client-side SPA fallback.
 
----
-
-## 13. College Viva Demonstration Guide
-
-When presenting ExpenseFlow in your college project viva, demonstrate the features in this logical sequence:
-
-1. **Landing Page:** Show the overview of platform capabilities, responsive navigation, and Light/Dark mode toggling.
-2. **Authentication:** Log in with `demo@expenseflow.com` / `Password123!` or demonstrate new registration with the real-time password strength meter.
-3. **Dashboard:** Point out the live financial summary cards, multi-month trend chart, category breakdown donut, and AI spending prediction.
-4. **Voice Entry:** Click "Voice Entry", say *"I spent 250 on food today"*, show the parsed confirmation modal, confirm, and watch the dashboard figures update instantly.
-5. **Recurring Budget System:** Navigate to **Budgets**, highlight the active Recurring Salary plan (₹35,000 on Day 1), and click "Sync Now" to show idempotent execution.
-6. **Expense & Income Management:** Add an expense, show category validation, filter transactions, and click "Export CSV" to demonstrate report downloading.
-7. **Financial Health Assessment:** Open **Financial Health** to explain the 5 algorithmic factor pillars and deterministic scoring methodology.
-
----
-
-## 14. Important Notes & Future Improvements
-
-- **No Mock Production Data:** All numbers, charts, and advice are strictly computed from real database records.
-- **Fail-Safe Email Transporter:** If SMTP credentials are not provided, email notifications log cleanly to the development console without interrupting user actions.
-- **Future Enhancements:**
-  - Optical Character Recognition (OCR) for receipt image scanning.
-  - Multi-user shared family budgets.
-  - Push notifications via Web Push API.
-
----
-
-**Developed for academic demonstration and production personal finance management.**
