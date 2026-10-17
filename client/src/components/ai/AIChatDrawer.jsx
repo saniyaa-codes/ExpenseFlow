@@ -9,9 +9,6 @@ import {
   Sparkles,
   Volume2,
   VolumeX,
-  RotateCcw,
-  CheckCircle2,
-  AlertTriangle,
 } from 'lucide-react';
 import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -21,12 +18,16 @@ import { handleTransactionBudgetAlerts } from '../../utils/mobileNotification';
 import './AIChatDrawer.css';
 
 const QUICK_PROMPTS = [
-  'What is my total income?',
+  'Will I be able to buy a laptop in 6 months?',
+  'Delete last transaction',
   'What is my remaining budget?',
+  'What is my total income?',
   'What category do I spend the most on?',
   'What are my recent expenses?',
-  'How do I use recurring income and budget?',
+  'Can I afford to eat out tonight?',
   'How can I reduce my spending?',
+  'What should my emergency fund be?',
+  'How do I use recurring income and budget?',
 ];
 
 export default function AIChatDrawer() {
@@ -36,7 +37,7 @@ export default function AIChatDrawer() {
     {
       id: 1,
       sender: 'ai',
-      text: 'Hello! I am ExpenseFlow AI. You can ask me about your spending trends, affordability for large purchases, or log expenses by speaking.',
+      text: 'Hello! Welcome to ExpenseFlow AI, your personal financial assistant. You can ask me questions like "Will I be able to buy a laptop in 6 months?", "What is my remaining budget?", or manage your transactions by voice or text (e.g., "Add ₹500 for food" or "Delete last transaction"). How can I assist you today?',
       time: 'Just now',
     },
   ]);
@@ -89,6 +90,7 @@ export default function AIChatDrawer() {
       if (!cleanText) return;
 
       const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'en-IN';
       utterance.rate = 1.0;
       utterance.pitch = 1.0;
       utterance.onstart = () => setIsSpeaking(true);
@@ -198,48 +200,135 @@ export default function AIChatDrawer() {
         }
       }
 
+      const lower = transcript.toLowerCase().trim();
+
       // 3. Add as user message
       setMessages((prev) => [
         ...prev,
         { id: Date.now(), sender: 'user', text: `🎙️ "${transcript}"`, time: 'Just now' },
       ]);
 
-      // 4. Check if it's a question or a transaction entry
-      const lower = transcript.toLowerCase();
-      const isQuestion =
-        lower.includes('how much') ||
-        lower.includes('how do i') ||
-        lower.includes('how to') ||
-        lower.includes('afford') ||
-        lower.includes('where did') ||
-        lower.includes('how can') ||
-        lower.includes('summary') ||
-        lower.includes('what is') ||
-        lower.includes('what are') ||
-        lower.includes('what does') ||
-        lower.includes('did i') ||
-        lower.includes('compare') ||
-        lower.includes('budget') ||
-        lower.includes('recurring') ||
-        lower.includes('goal') ||
-        lower.includes('who are you') ||
-        lower.includes('how are you') ||
-        lower.includes('save');
+      // 4. Check if voice intent is a Transaction Deletion command
+      const isDeleteAction =
+        (/\b(delete|remove|cancel)\b/i.test(lower)) &&
+        (/\b(transaction|expense|income|entry|last|recent|food|transport|shopping|bills|rent|\d+)\b/i.test(lower) || /^(delete|remove)\b/i.test(lower)) &&
+        !lower.includes('how');
 
-      if (isQuestion) {
+      // 5. Check if voice intent is a Transaction Add command
+      const isAddAction =
+        (/^(add|record|log|create|i spent|spent|paid|bought|received|earned|i received|i earned)\b/i.test(lower) ||
+         (/\b(\d+[\d,]*|\d+k)\b/i.test(lower) && /\b(food|transport|salary|rent|bill|shopping|entertainment|freelance|groceries|lunch|dinner|uber)\b/i.test(lower))) &&
+        !lower.includes('how');
+
+      if (isDeleteAction) {
         setIsLoading(true);
+        setStatusFeedback('Finding transaction to delete...');
         try {
-          const historyPayload = messages.slice(-8).map((m) => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            text: m.text,
-          }));
+          const res = await api.post('/ai/parse-voice', { transcript });
+          if (res.success && res.data?.type === 'DELETE_PROPOSAL') {
+            const tx = res.data.transactionToDelete;
+            const deletePrompt = res.data.confirmationPrompt || `Delete ${formatAmount(tx.amount)} ${tx.category} transaction?`;
+            setStagedProposal({ type: 'DELETE', item: tx, promptQuestion: deletePrompt });
+            setStatusFeedback('Please say "Confirm" to delete, or "Cancel" to abort.');
+            setMessages((prev) => [
+              ...prev,
+              { id: Date.now() + 1, sender: 'ai', text: deletePrompt, time: 'Just now' },
+            ]);
+            speakText(deletePrompt);
+          } else {
+            const replyMsg = res.data?.reply || 'Could not find a matching transaction to delete.';
+            setMessages((prev) => [
+              ...prev,
+              { id: Date.now() + 1, sender: 'ai', text: replyMsg, time: 'Just now' },
+            ]);
+            speakText(replyMsg);
+          }
+        } catch (err) {
+          setStatusFeedback('');
+          const errText = err.message || 'Could not find matching transaction to delete.';
+          setMessages((prev) => [
+            ...prev,
+            { id: Date.now() + 1, sender: 'ai', text: `⚠️ ${errText}`, time: 'Just now' },
+          ]);
+          speakText(errText);
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
 
-          const res = await api.post('/ai/chat', {
-            message: transcript,
-            conversationHistory: historyPayload,
-          });
+      if (isAddAction) {
+        setIsLoading(true);
+        setStatusFeedback('Parsing transaction details...');
+        try {
+          const res = await api.post('/ai/parse-voice', { transcript });
+          if (res.success && res.data?.type === 'INCOMPLETE_PROPOSAL') {
+            const askMsg = res.data.reply || 'Please specify the amount and category.';
+            setMessages((prev) => [
+              ...prev,
+              { id: Date.now() + 1, sender: 'ai', text: askMsg, time: 'Just now' },
+            ]);
+            speakText(askMsg);
+            setStatusFeedback('Please clarify transaction details.');
+          } else if (res.success && (res.data?.proposals || res.data?.proposal)) {
+            const props = res.data.proposals || [res.data.proposal];
+            const promptQuestion = res.data.confirmationPrompt || `Add ${formatAmount(props[0].amount)} ${props[0].type || 'Expense'} → ${props[0].category} → Today?`;
+            setStagedProposal({ type: 'ADD', items: props, promptQuestion });
+            setStatusFeedback('Please say "Confirm" to save, or "Cancel" to abort.');
+            setMessages((prev) => [
+              ...prev,
+              { id: Date.now() + 1, sender: 'ai', text: promptQuestion, time: 'Just now' },
+            ]);
+            speakText(promptQuestion);
+          }
+        } catch (err) {
+          setStatusFeedback('');
+          setMessages((prev) => [
+            ...prev,
+            { id: Date.now() + 1, sender: 'ai', text: `Could not parse: ${err.message}`, time: 'Just now' },
+          ]);
+          speakText('Could not understand the transaction details. Please try again.');
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
 
-          if (res.success && res.data) {
+      // 6. Otherwise: All other voice inputs are Financial Questions & Conversations
+      setIsLoading(true);
+      setStatusFeedback('Thinking...');
+      try {
+        const historyPayload = messages.slice(-8).map((m) => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          text: m.text,
+        }));
+
+        const res = await api.post('/ai/chat', {
+          message: transcript,
+          conversationHistory: historyPayload,
+        });
+
+        if (res.success && res.data) {
+          if (res.data.isDeleteProposal || res.data.type === 'DELETE_PROPOSAL') {
+            const tx = res.data.transactionToDelete;
+            const promptQuestion = res.data.confirmationPrompt || res.data.reply;
+            setStagedProposal({ type: 'DELETE', item: tx, promptQuestion });
+            setStatusFeedback('Please say "Confirm" to delete, or "Cancel" to abort.');
+            setMessages((prev) => [
+              ...prev,
+              { id: Date.now() + 1, sender: 'ai', text: promptQuestion, time: 'Just now' },
+            ]);
+            speakText(promptQuestion);
+          } else if (res.data.isTransactionProposal && res.data.proposals) {
+            const promptQuestion = res.data.confirmationPrompt || res.data.reply;
+            setStagedProposal({ type: 'ADD', items: res.data.proposals, promptQuestion });
+            setStatusFeedback('Please say "Confirm" to save, or "Cancel" to abort.');
+            setMessages((prev) => [
+              ...prev,
+              { id: Date.now() + 1, sender: 'ai', text: promptQuestion, time: 'Just now' },
+            ]);
+            speakText(promptQuestion);
+          } else {
             setMessages((prev) => [
               ...prev,
               {
@@ -252,61 +341,16 @@ export default function AIChatDrawer() {
             ]);
             speakText(res.data.reply);
           }
-        } catch (err) {
-          setMessages((prev) => [
-            ...prev,
-            { id: Date.now() + 1, sender: 'ai', text: `⚠️ ${err.message}`, time: 'Just now' },
-          ]);
-        } finally {
-          setIsLoading(false);
-        }
-        return;
-      }
-
-      // 5. Parse voice transaction (Add or Delete)
-      try {
-        setIsLoading(true);
-        const res = await api.post('/ai/parse-voice', { transcript });
-
-        if (res.success && res.data?.type === 'INCOMPLETE_PROPOSAL') {
-          const askMsg = res.data.reply || 'Please specify the amount and category.';
-          setMessages((prev) => [
-            ...prev,
-            { id: Date.now() + 1, sender: 'ai', text: askMsg, time: 'Just now' },
-          ]);
-          speakText(askMsg);
-          setStatusFeedback('Please clarify transaction details.');
-        } else if (res.success && res.data?.proposals) {
-          const promptQuestion = res.data.confirmationPrompt || `Add ${formatAmount(res.data.proposals[0].amount)} ${res.data.proposals[0].type || 'Expense'} → ${res.data.proposals[0].category} → Today?`;
-
-          setStagedProposal({ type: 'ADD', items: res.data.proposals, promptQuestion });
-          setStatusFeedback('Please say "Confirm" to save, or "Cancel" to abort.');
-          setMessages((prev) => [
-            ...prev,
-            { id: Date.now() + 1, sender: 'ai', text: promptQuestion, time: 'Just now' },
-          ]);
-          speakText(promptQuestion);
-        } else if (res.success && res.data?.type === 'DELETE_PROPOSAL') {
-          const tx = res.data.transactionToDelete;
-          const deletePrompt = res.data.confirmationPrompt || `Delete ${formatAmount(tx.amount)} ${tx.category} transaction?`;
-
-          setStagedProposal({ type: 'DELETE', item: tx, promptQuestion: deletePrompt });
-          setStatusFeedback('Please say "Confirm" to delete, or "Cancel" to abort.');
-          setMessages((prev) => [
-            ...prev,
-            { id: Date.now() + 1, sender: 'ai', text: deletePrompt, time: 'Just now' },
-          ]);
-          speakText(deletePrompt);
         }
       } catch (err) {
-        setStatusFeedback('');
         setMessages((prev) => [
           ...prev,
-          { id: Date.now() + 1, sender: 'ai', text: `Could not parse: ${err.message}`, time: 'Just now' },
+          { id: Date.now() + 1, sender: 'ai', text: `⚠️ ${err.message}`, time: 'Just now' },
         ]);
-        speakText('Could not understand the transaction details. Please try again.');
+        speakText('Sorry, I encountered an issue processing your request. Please try again.');
       } finally {
         setIsLoading(false);
+        setStatusFeedback('');
       }
     };
 
@@ -347,6 +391,26 @@ export default function AIChatDrawer() {
       setIsSpeaking(false);
     }
 
+    // Check for staged proposal confirmation or cancellation via text
+    if (stagedProposal) {
+      const lower = text.toLowerCase().trim();
+      if (lower.includes('confirm') || lower.includes('yes') || lower.includes('delete') || lower.includes('add it') || lower.includes('delete it') || lower.includes('ok') || lower.includes('proceed') || lower.includes('do it')) {
+        handleConfirmProposal();
+        return;
+      }
+      if (lower.includes('cancel') || lower.includes('no') || lower.includes('stop') || lower.includes('abort') || lower.includes('nevermind')) {
+        setStagedProposal(null);
+        setStatusFeedback('Action cancelled.');
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now(), sender: 'user', text, time: 'Just now' },
+          { id: Date.now() + 1, sender: 'ai', text: 'Action cancelled.', time: 'Just now' },
+        ]);
+        speakText('Action cancelled.');
+        return;
+      }
+    }
+
     // Check for correction
     if (handlePotentialCorrection(text)) {
       return;
@@ -373,7 +437,22 @@ export default function AIChatDrawer() {
       });
 
       if (res.success && res.data) {
-        if (res.data.isTransactionProposal && res.data.proposals) {
+        if (res.data.isDeleteProposal || res.data.type === 'DELETE_PROPOSAL') {
+          const tx = res.data.transactionToDelete;
+          const promptQuestion = res.data.confirmationPrompt || res.data.reply;
+          setStagedProposal({ type: 'DELETE', item: tx, promptQuestion });
+          setStatusFeedback('Please say "Confirm" to delete, or "Cancel" to abort.');
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now() + 1,
+              sender: 'ai',
+              text: promptQuestion,
+              time: 'Just now',
+            },
+          ]);
+          speakText(promptQuestion);
+        } else if (res.data.isTransactionProposal && res.data.proposals) {
           const promptQuestion = res.data.confirmationPrompt || res.data.reply;
           setStagedProposal({ type: 'ADD', items: res.data.proposals, promptQuestion });
           setStatusFeedback('Please say "Confirm" to save, or "Cancel" to abort.');
@@ -459,6 +538,7 @@ export default function AIChatDrawer() {
       setStagedProposal(null);
       setStatusFeedback('');
       window.dispatchEvent(new CustomEvent('transaction-updated'));
+      window.dispatchEvent(new CustomEvent('transaction-deleted'));
     } catch (err) {
       alert(`Operation failed: ${err.message}`);
     } finally {
@@ -611,7 +691,7 @@ export default function AIChatDrawer() {
                     <div className="ef-proposal-row">
                       <div>
                         <strong>{stagedProposal.item.category}</strong>
-                        <span className="ef-prop-date"> ({new Date(stagedProposal.item.date).toLocaleDateString()})</span>
+                        <span className="ef-prop-date"> ({stagedProposal.item.dateFormatted || new Date(stagedProposal.item.date).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })})</span>
                       </div>
                       <strong className="text-expense">
                         -{formatAmount(stagedProposal.item.amount)}

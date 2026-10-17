@@ -47,7 +47,7 @@ export default function Register() {
     if (strengthScore === 0) return { label: 'Empty', color: '#D4D4D4' };
     if (strengthScore <= 2) return { label: 'Weak', color: '#EF4444' };
     if (strengthScore === 3) return { label: 'Good', color: '#F59E0B' };
-    return { label: 'Strong & Secure', color: '#10B981' };
+    return { label: 'Strong Password', color: '#10B981' };
   };
 
   const handleChange = (e) => {

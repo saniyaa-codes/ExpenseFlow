@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, KeyRound } from 'lucide-react';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
@@ -7,7 +7,6 @@ import api from '../../services/api';
 
 export default function ResetPassword() {
   const { token } = useParams();
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: '',

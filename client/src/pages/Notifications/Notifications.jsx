@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Check, CheckCheck, AlertTriangle, Target, Shield, Info, Smartphone, Radio } from 'lucide-react';
+import { Bell, CheckCheck, AlertTriangle, Target, Shield, Info } from 'lucide-react';
 import api from '../../services/api';
 import Button from '../../components/common/Button';
-import Badge from '../../components/common/Badge';
 import {
   requestNotificationPermission,
-  getNotificationPermission,
-  triggerMobileNotification,
 } from '../../utils/mobileNotification';
 import './Notifications.css';
 
@@ -14,25 +11,6 @@ export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [permStatus, setPermStatus] = useState(getNotificationPermission());
-
-  const handleEnableDeviceAlerts = async () => {
-    const res = await requestNotificationPermission();
-    setPermStatus(res);
-    if (res === 'granted') {
-      triggerMobileNotification(
-        '🔔 Smartphone Notifications Enabled',
-        'ExpenseFlow will now buzz and display popup alerts whenever you spend 50%, 75%, 90%, or 100% of your budget.'
-      );
-    }
-  };
-
-  const handleTestAlert = () => {
-    triggerMobileNotification(
-      '⚠️ Test Budget Alert: 75% Reached',
-      'This is a sample phone popup & vibration notification for ExpenseFlow budget alerts.'
-    );
-  };
 
   const fetchNotifications = async () => {
     setIsLoading(true);
@@ -51,6 +29,10 @@ export default function Notifications() {
 
   useEffect(() => {
     fetchNotifications();
+    // Ensure permission is requested quietly so phone notifications work
+    if ('Notification' in window && Notification.permission === 'default') {
+      requestNotificationPermission().catch(() => {});
+    }
   }, []);
 
   const handleMarkAsRead = async (id) => {
@@ -78,6 +60,7 @@ export default function Notifications() {
       case 'goal_milestone':
         return <Target size={18} className="text-success" />;
       case 'security':
+      case 'account_alert':
         return <Shield size={18} className="text-danger" />;
       default:
         return <Info size={18} className="text-accent" />;
@@ -96,38 +79,6 @@ export default function Notifications() {
             Mark all as read
           </Button>
         )}
-      </div>
-
-      {/* Smartphone Push & Vibration Notification Setup Card */}
-      <div className="surface-card ef-phone-notif-card">
-        <div className="ef-phone-notif-left">
-          <div className="ef-phone-icon-wrap">
-            <Smartphone size={22} className="text-accent" />
-          </div>
-          <div className="ef-phone-info">
-            <div className="ef-phone-title-row">
-              <h4>Smartphone & Browser Alert Popups</h4>
-              <Badge variant={permStatus === 'granted' ? 'success' : 'warning'} size="sm">
-                {permStatus === 'granted' ? 'Active on This Device' : 'Permission Required'}
-              </Badge>
-            </div>
-            <p>
-              Receive instant screen popups and phone vibration at <strong>50%, 75%, 90%, and 100%</strong> of your budget. (Instant email alerts are also sent directly to your phone for all 4 thresholds).
-            </p>
-          </div>
-        </div>
-
-        <div className="ef-phone-notif-actions">
-          {permStatus === 'granted' ? (
-            <Button variant="outline" size="sm" icon={Radio} onClick={handleTestAlert}>
-              Test Phone Alert & Buzz
-            </Button>
-          ) : (
-            <Button variant="primary" size="sm" icon={Bell} onClick={handleEnableDeviceAlerts}>
-              Enable Phone Notifications
-            </Button>
-          )}
-        </div>
       </div>
 
       <div className="surface-card ef-notif-card">
@@ -152,9 +103,10 @@ export default function Notifications() {
                   <div className="ef-notif-head">
                     <strong>{n.title}</strong>
                     <span className="ef-notif-time">
-                      {new Date(n.createdAt).toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
+                      {new Date(n.createdAt).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
                       })}

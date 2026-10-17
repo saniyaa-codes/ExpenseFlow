@@ -15,7 +15,6 @@ import {
   LogOut,
   Menu,
   X,
-  ShieldCheck,
   Sun,
   Moon,
   Sparkles,
@@ -23,6 +22,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useTheme } from '../context/ThemeContext';
+import { requestNotificationPermission } from '../utils/mobileNotification';
 import AIChatDrawer from '../components/ai/AIChatDrawer';
 import './AppLayout.css';
 
@@ -32,6 +32,12 @@ export default function AppLayout() {
   const { currency, changeCurrency } = useCurrency();
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+
+  React.useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      requestNotificationPermission().catch(() => {});
+    }
+  }, []);
 
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },

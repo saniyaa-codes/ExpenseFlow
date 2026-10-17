@@ -50,7 +50,7 @@ export default function Dashboard() {
   const [budgets, setBudgets] = useState([]);
   const [goals, setGoals] = useState([]);
   const [monthsCount, setMonthsCount] = useState(6);
-  const [isLoading, setIsLoading] = useState(true);
+  const [_isLoading, setIsLoading] = useState(true);
 
   // Quick Add Transaction Modal
   const [isModalOpen, setIsModalOpen] = useState(false);

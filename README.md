@@ -2,6 +2,8 @@
 
 A production-ready full-stack web application designed for students and young professionals to manage personal cashflow, budget discipline, and savings targets. Built using the **MERN** architecture (MongoDB, Express.js, React.js, Node.js) with native CSS variables, Recharts, and Google Gemini AI conversational grounding.
 
+> 📖 **Deep-Dive Technical Specifications:** For full technical details covering MongoDB schemas, JWT authentication, bcrypt encryption, Helmet security, rate limiting, system workflows, and architecture diagrams, see the documentation sections below.
+
 ---
 
 ## 1. Project Description

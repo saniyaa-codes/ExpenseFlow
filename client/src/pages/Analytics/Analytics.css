@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
 }
 
 .ef-chart-card {
@@ -9,23 +10,176 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-card, 0 2px 10px rgba(0, 0, 0, 0.05));
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ef-chart-card:hover {
+  box-shadow: var(--shadow-card-hover, 0 6px 18px rgba(0, 0, 0, 0.08));
 }
 
 .ef-chart-card--full {
   grid-column: 1 / -1;
 }
 
+.ef-chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ef-chart-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ef-chart-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.ef-chart-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.ef-chart-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Fullscreen / Expand button */
+.ef-chart-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent, #2563EB);
+  background: var(--color-accent-subtle, #EFF6FF);
+  border: 1px solid var(--color-accent-border, #BFDBFE);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ef-chart-expand-btn:hover {
+  background: var(--color-accent, #2563EB);
+  color: #ffffff;
+  border-color: var(--color-accent, #2563EB);
+  transform: translateY(-1px);
+}
+
+/* Metric pills inside card header */
+.ef-kpi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9999px;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+}
+
+.ef-kpi-badge--income {
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.ef-kpi-badge--expense {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.ef-kpi-badge--savings {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+/* In-Page Chart Wrappers */
 .ef-chart-wrapper {
   width: 100%;
+  position: relative;
+}
+
+.ef-chart-wrapper--trend {
+  height: 420px;
+  min-height: 400px;
+}
+
+.ef-chart-wrapper--half {
+  height: 350px;
+  min-height: 320px;
 }
 
 .ef-chart-caption {
-  font-size: var(--font-size-meta);
+  font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.4;
-  margin-top: 4px;
+  line-height: 1.5;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-subtle);
 }
 
+/* Category Legend List */
+.ef-category-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--bg-app);
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.ef-category-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  gap: 8px;
+}
+
+.ef-category-legend-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-main);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ef-category-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ef-category-legend-val {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+/* Range Filter */
 .ef-range-filter {
   display: inline-flex;
   align-items: center;
@@ -34,7 +188,7 @@
 
 .ef-range-label {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
@@ -44,9 +198,159 @@
   border-radius: 6px;
 }
 
+/* =========================================================
+   DEDICATED FULLSCREEN MODAL / VIEW
+   ========================================================= */
+
+.ef-chart-fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: efModalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ef-chart-fullscreen-dialog {
+  width: 100%;
+  max-width: 1280px;
+  height: 90vh;
+  max-height: 880px;
+  background: var(--bg-surface, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-main);
+}
+
+.ef-chart-fullscreen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.ef-fullscreen-title-box h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.ef-fullscreen-title-box p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.ef-fullscreen-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-subtle);
+  color: var(--text-main);
+  border: 1px solid var(--border-main);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ef-fullscreen-close-btn:hover {
+  background: var(--color-danger, #ef4444);
+  color: #ffffff;
+  border-color: var(--color-danger, #ef4444);
+}
+
+.ef-chart-fullscreen-body {
+  flex: 1;
+  padding: 24px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ef-chart-fullscreen-canvas {
+  width: 100%;
+  height: 520px;
+  min-height: 480px;
+}
+
+/* Fullscreen KPI Cards */
+.ef-fullscreen-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.ef-fullscreen-kpi-card {
+  padding: 16px;
+  background: var(--bg-app);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ef-fullscreen-kpi-card span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ef-fullscreen-kpi-card strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+@keyframes efModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1024px) {
+  .ef-chart-wrapper--trend {
+    height: 360px;
+  }
+  .ef-chart-wrapper--half {
+    height: 320px;
+  }
+}
+
 @media (max-width: 900px) {
   .ef-analytics-grid {
     grid-template-columns: 1fr;
   }
+  .ef-chart-fullscreen-dialog {
+    height: 95vh;
+    padding: 0;
+  }
+  .ef-chart-fullscreen-canvas {
+    height: 380px;
+  }
 }
-

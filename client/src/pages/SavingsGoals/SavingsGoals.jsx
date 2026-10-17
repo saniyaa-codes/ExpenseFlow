@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Plus, Target, Calendar, DollarSign, CheckCircle2, Trash2, ArrowUpRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Target, Trash2, ArrowUpRight } from 'lucide-react';
 import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import Button from '../../components/common/Button';
@@ -153,9 +153,9 @@ export default function SavingsGoals() {
                 <div className="ef-gmeta-row">
                   <span>Target Date:</span>
                   <strong>
-                    {new Date(g.deadline).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'short',
+                    {new Date(g.deadline).toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: '2-digit',
                       year: 'numeric',
                     })}
                   </strong>

@@ -1,12 +1,10 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Activity, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle2, AlertCircle } from 'lucide-react';
 import api from '../../services/api';
-import { useCurrency } from '../../context/CurrencyContext';
 import Badge from '../../components/common/Badge';
 import './HealthPage.css';
 
 export default function HealthPage() {
-  const { formatAmount } = useCurrency();
   const [healthData, setHealthData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 

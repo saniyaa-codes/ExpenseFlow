@@ -6,10 +6,8 @@ import {
   Play,
   Pause,
   Edit3,
-  Calendar,
   Sparkles,
   CheckCircle2,
-  Clock,
   RefreshCw,
   AlertCircle,
   PieChart,
@@ -25,7 +23,7 @@ import './Budgets.css';
 export default function Budgets() {
   const { formatAmount } = useCurrency();
   const [budgets, setBudgets] = useState([]);
-  const [totalOverallSpent, setTotalOverallSpent] = useState(0);
+  const [_totalOverallSpent, setTotalOverallSpent] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Standard Budget Modal State
@@ -36,7 +34,7 @@ export default function Budgets() {
   // Recurring Income & Budget State
   const [recurringPlan, setRecurringPlan] = useState(null);
   const [isAppliedThisMonth, setIsAppliedThisMonth] = useState(false);
-  const [isRecurringLoading, setIsRecurringLoading] = useState(true);
+  const [_isRecurringLoading, setIsRecurringLoading] = useState(true);
   const [isRecurringModalOpen, setIsRecurringModalOpen] = useState(false);
   const [isRecurringSubmitting, setIsRecurringSubmitting] = useState(false);
   const [recurringFeedback, setRecurringFeedback] = useState('');
@@ -371,11 +369,11 @@ export default function Budgets() {
               <span className="ef-detail-label">Plan Duration</span>
               <strong className="ef-detail-value" style={{ fontSize: '14px' }}>
                 {recurringPlan.endDate
-                  ? `Until ${new Date(recurringPlan.endDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
+                  ? `Until ${new Date(recurringPlan.endDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}`
                   : 'Active Indefinitely'}
               </strong>
               <span className="ef-detail-sub">
-                Started {new Date(recurringPlan.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                Started {new Date(recurringPlan.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
               </span>
             </div>
           </div>

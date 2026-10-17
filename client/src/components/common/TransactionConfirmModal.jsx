@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, X, ArrowRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 import Modal from './Modal';
 import Button from './Button';
 import Badge from './Badge';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, FileText, Calendar, CheckCircle2, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
+import { Download } from 'lucide-react';
 import api, { downloadTransactionsCSV } from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import Button from '../../components/common/Button';

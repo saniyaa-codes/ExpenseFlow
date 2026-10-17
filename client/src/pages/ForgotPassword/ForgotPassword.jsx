@@ -39,7 +39,7 @@ export default function ForgotPassword() {
         </div>
         <h2 className="ef-auth-title">Check your inbox</h2>
         <p className="ef-auth-subtitle">
-          If an account exists for <strong>{email}</strong>, we have sent a secure password reset link.
+          If an account exists for <strong>{email}</strong>, we have sent a password reset link.
         </p>
 
         <div className="ef-auth-alert ef-auth-alert--success">

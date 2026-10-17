@@ -1,6 +1,7 @@
-/* ExpenseFlow Simple & Clean Home Page — No Scroll */
+/* ExpenseFlow Simple & Clean Home Page — Transparent Background Image */
 
 .ef-home-page {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -12,7 +13,30 @@
   box-sizing: border-box;
 }
 
+.ef-home-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../../assets/home-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="dark"] .ef-home-page::before {
+  opacity: 0.28;
+}
+
 .ef-home-container {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;

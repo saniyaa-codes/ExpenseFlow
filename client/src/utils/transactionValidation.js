@@ -30,10 +30,24 @@ export function formatDateLabel(dateInput) {
   if (isYesterday) return 'Yesterday';
 
   return d.toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: d.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
   });
+}
+
+/**
+ * Format date strictly in Indian format (DD/MM/YYYY)
+ * Examples: 17/10/2026
+ */
+export function formatIndianDate(dateInput) {
+  if (!dateInput) return '';
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return '';
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
 }
 
 /**

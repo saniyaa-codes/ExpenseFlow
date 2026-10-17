@@ -21,7 +21,7 @@ import './Transactions.css';
 export default function Transactions() {
   const { formatAmount, currency } = useCurrency();
   const [transactions, setTransactions] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [_total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Filters
@@ -280,9 +280,9 @@ export default function Transactions() {
                 {transactions.map((tx) => (
                   <tr key={tx._id}>
                     <td className="ef-col-date">
-                      {new Date(tx.date).toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
+                      {new Date(tx.date).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: '2-digit',
                         year: 'numeric',
                       })}
                     </td>

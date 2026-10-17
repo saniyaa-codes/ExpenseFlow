@@ -1,4 +1,4 @@
-﻿import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
 const CurrencyContext = createContext(null);
@@ -27,7 +27,8 @@ export function CurrencyProvider({ children }) {
   const formatAmount = (amount) => {
     const num = Number(amount) || 0;
     const symbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '₹';
-    return `${symbol} ${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const locale = currency === 'INR' ? 'en-IN' : undefined;
+    return `${symbol} ${num.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   return (

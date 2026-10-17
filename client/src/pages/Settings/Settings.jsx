@@ -104,10 +104,10 @@ export default function Settings() {
                 <span>Member Since</span>
                 <strong>
                   {user?.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString(undefined, {
+                    ? new Date(user.createdAt).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: '2-digit',
                         year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
                       })
                     : 'Active'}
                 </strong>

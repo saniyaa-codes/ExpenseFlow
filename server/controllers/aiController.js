@@ -57,7 +57,129 @@ export const detectCategoryFromText = (str) => {
 };
 
 /**
- * Natural language transaction parser and validator
+ * Format date strictly in Indian format (DD/MM/YYYY)
+ * Example: 17/10/2026
+ */
+export const formatIndianDate = (dateVal) => {
+  if (!dateVal) return '';
+  const d = new Date(dateVal);
+  if (isNaN(d.getTime())) return '';
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+/**
+ * Natural language helper to parse Indian format dates (DD/MM/YYYY, DD-MM-YYYY, relative days, named months)
+ */
+export const extractIndianDateFromText = (text) => {
+  if (!text) {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    return { date: now, label: 'Today', dateStr: `${year}-${month}-${day}`, displayIndian: `${day}/${month}/${year}` };
+  }
+
+  const s = text.toLowerCase();
+  const now = new Date();
+
+  if (s.includes('yesterday')) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - 1);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return { date: d, label: 'Yesterday', dateStr: `${year}-${month}-${day}`, displayIndian: `${day}/${month}/${year}` };
+  }
+
+  if (s.includes('day before yesterday')) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - 2);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return { date: d, label: `${day}/${month}/${year}`, dateStr: `${year}-${month}-${day}`, displayIndian: `${day}/${month}/${year}` };
+  }
+
+  const daysAgoMatch = s.match(/(\d+)\s*days?\s*ago/);
+  if (daysAgoMatch) {
+    const days = parseInt(daysAgoMatch[1], 10);
+    const d = new Date(now);
+    d.setDate(d.getDate() - days);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return { date: d, label: `${day}/${month}/${year}`, dateStr: `${year}-${month}-${day}`, displayIndian: `${day}/${month}/${year}` };
+  }
+
+  // Indian format numeric: DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY
+  const ddmmyyyyMatch = text.match(/\b([0-3]?\d)[\/\-\.]([0-1]?\d)(?:[\/\-\.](\d{2,4}))?\b/);
+  if (ddmmyyyyMatch) {
+    const dNum = parseInt(ddmmyyyyMatch[1], 10);
+    const mNum = parseInt(ddmmyyyyMatch[2], 10);
+    let yNum = ddmmyyyyMatch[3] ? parseInt(ddmmyyyyMatch[3], 10) : now.getFullYear();
+    if (yNum < 100) yNum += 2000;
+    if (dNum >= 1 && dNum <= 31 && mNum >= 1 && mNum <= 12) {
+      const d = new Date(yNum, mNum - 1, dNum, 12, 0, 0);
+      if (!isNaN(d.getTime())) {
+        const day = String(dNum).padStart(2, '0');
+        const month = String(mNum).padStart(2, '0');
+        return {
+          date: d,
+          label: `${day}/${month}/${yNum}`,
+          dateStr: `${yNum}-${month}-${day}`,
+          displayIndian: `${day}/${month}/${yNum}`,
+        };
+      }
+    }
+  }
+
+  // Word date like "15th October" or "15 Oct" or "October 15"
+  const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  const wordDateMatch = s.match(/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*(?:\s+(\d{4}))?/i) ||
+                        s.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s+(\d{4}))?/i);
+  if (wordDateMatch) {
+    let dayNum, monthStr, yNum;
+    if (isNaN(parseInt(wordDateMatch[1], 10))) {
+      monthStr = wordDateMatch[1];
+      dayNum = parseInt(wordDateMatch[2], 10);
+      yNum = wordDateMatch[3] ? parseInt(wordDateMatch[3], 10) : now.getFullYear();
+    } else {
+      dayNum = parseInt(wordDateMatch[1], 10);
+      monthStr = wordDateMatch[2];
+      yNum = wordDateMatch[3] ? parseInt(wordDateMatch[3], 10) : now.getFullYear();
+    }
+    const monthIdx = monthNames.findIndex((m) => monthStr.toLowerCase().startsWith(m));
+    if (monthIdx !== -1 && dayNum >= 1 && dayNum <= 31) {
+      const d = new Date(yNum, monthIdx, dayNum, 12, 0, 0);
+      if (!isNaN(d.getTime())) {
+        const day = String(dayNum).padStart(2, '0');
+        const month = String(monthIdx + 1).padStart(2, '0');
+        return {
+          date: d,
+          label: `${day}/${month}/${yNum}`,
+          dateStr: `${yNum}-${month}-${day}`,
+          displayIndian: `${day}/${month}/${yNum}`,
+        };
+      }
+    }
+  }
+
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  return {
+    date: now,
+    label: 'Today',
+    dateStr: `${year}-${month}-${day}`,
+    displayIndian: `${day}/${month}/${year}`,
+  };
+};
+
+/**
+ * Natural language transaction parser and validator (strictly Indian format dates)
  */
 export const parseNaturalTransaction = (text, userCurrency = 'INR') => {
   const s = text.toLowerCase().trim();
@@ -96,15 +218,10 @@ export const parseNaturalTransaction = (text, userCurrency = 'INR') => {
     }
   }
 
-  // 5. Date Parsing
-  let targetDate = new Date();
-  let dateLabel = 'Today';
-  if (s.includes('yesterday')) {
-    targetDate.setDate(targetDate.getDate() - 1);
-    dateLabel = 'Yesterday';
-  }
-
-  const dateStr = targetDate.toISOString().split('T')[0];
+  // 5. Date Parsing in Indian format
+  const parsedDateObj = extractIndianDateFromText(text);
+  const dateStr = parsedDateObj.dateStr;
+  const dateLabel = parsedDateObj.label;
 
   // Validation: Check if required information is missing or unclear
   if (!amount || amount <= 0) {
@@ -119,9 +236,9 @@ export const parseNaturalTransaction = (text, userCurrency = 'INR') => {
     };
   }
 
-  // Confirmation Prompt format: “Add ₹500 Expense → Food → Today?”
+  // Confirmation Prompt format: “Add ₹500 Expense → Food → Today?” or “Add ₹500 Expense → Food → 15/10/2026?”
   const typeLabel = type === 'income' ? 'Income' : 'Expense';
-  const confirmationPrompt = `Add ${currSymbol}${amount.toLocaleString()} ${typeLabel} → ${category} → ${dateLabel}?`;
+  const confirmationPrompt = `Add ${currSymbol}${amount.toLocaleString('en-IN')} ${typeLabel} → ${category} → ${dateLabel}?`;
 
   return {
     status: 'READY',
@@ -135,7 +252,8 @@ export const parseNaturalTransaction = (text, userCurrency = 'INR') => {
       paymentMethod: type === 'income' ? 'Bank Transfer' : 'UPI',
       date: dateStr,
       dateLabel,
-      notes: `Spoken command: "${text.trim()}"`,
+      dateFormatted: parsedDateObj.displayIndian,
+      notes: `Voice/NL command: "${text.trim()}"`,
     },
   };
 };
@@ -197,16 +315,196 @@ export const runDeterministicAdvisor = ({
     }
   }
 
-  // 1. General greetings / meta
+  // 1. General greetings / meta & Opening Answer
   if (msg.includes('who are you') || msg.includes('what is your name') || msg.includes('your name')) {
-    return { reply: 'I am ExpenseFlow AI, your personal financial assistant for tracking spending, budgets, and savings.' };
+    return { reply: 'I am ExpenseFlow AI, your personal financial assistant for tracking spending, analyzing affordability, managing budgets, and planning savings.' };
   }
   if (msg.includes('how are you') || msg.includes('how are things') || msg.includes("what's up") || msg.includes('how are u')) {
-    return { reply: "I'm doing well, thank you! How can I help you manage your finances today?" };
+    return { reply: "I'm doing well and ready to assist you! How can I help you manage your finances or analyze your spending today?" };
   }
   if (/^(hi|hello|hey|greetings|good\s+(morning|afternoon|evening))\b/i.test(msg)) {
     return {
-      reply: `Hello! You can ask me about your spending, income, savings, remaining budget, or say "Add ₹500 for food" to record an expense.`,
+      reply: `Hello! Welcome to ExpenseFlow AI, your personal financial assistant. You can ask me questions like "Will I be able to buy a laptop in 6 months?", "What is my remaining budget?", "What is my total income?", or manage your transactions by saying "Add ₹500 for food" or "Delete last transaction". How can I assist you today?`,
+    };
+  }
+
+  // Proper closing / farewell answer
+  if (
+    msg.includes('thank you') ||
+    msg.includes('thanks') ||
+    msg.includes('bye') ||
+    msg.includes('goodbye') ||
+    msg.includes('see you') ||
+    msg.includes('have a good day') ||
+    msg.includes('have a nice day')
+  ) {
+    return {
+      reply: `You're very welcome! Keep up the great financial habits. If you need more insights, want to test affordability, or need to log or delete transactions, I'm always right here. Have a wonderful day managing your finances with ExpenseFlow!`,
+    };
+  }
+
+  // Question: Will I be able to buy a laptop in 6 months? / Purchase Affordability Planning
+  const isGoalAffordabilityQuery =
+    (msg.includes('will i be able to buy') ||
+     msg.includes('can i buy') ||
+     msg.includes('will i be able to afford') ||
+     msg.includes('can i afford to buy') ||
+     msg.includes('able to buy') ||
+     msg.includes('buy a laptop') ||
+     msg.includes('buy laptop')) &&
+    (msg.includes('month') || msg.includes('year') || msg.includes('in 6') || msg.includes('laptop') || msg.includes('phone') || msg.includes('bike') || msg.includes('car'));
+
+  if (isGoalAffordabilityQuery) {
+    let item = 'laptop';
+    if (msg.includes('laptop') || msg.includes('macbook') || msg.includes('computer') || msg.includes('pc')) item = 'laptop';
+    else if (msg.includes('phone') || msg.includes('iphone') || msg.includes('smartphone') || msg.includes('mobile')) item = 'phone';
+    else if (msg.includes('bike') || msg.includes('motorcycle') || msg.includes('scooter')) item = 'bike';
+    else if (msg.includes('car')) item = 'car';
+    else if (msg.includes('trip') || msg.includes('vacation')) item = 'trip';
+    else if (msg.includes('watch') || msg.includes('smartwatch')) item = 'smartwatch';
+
+    let months = 6;
+    const monthMatch = msg.match(/(\d+)\s*(?:month|months|m)\b/i);
+    if (monthMatch) {
+      months = parseInt(monthMatch[1], 10);
+    } else if (msg.includes('a year') || msg.includes('1 year')) {
+      months = 12;
+    } else if (msg.includes('half year') || msg.includes('half a year')) {
+      months = 6;
+    }
+
+    let targetPrice = extractAmountFromText(msg);
+    if (!targetPrice) {
+      if (item === 'laptop') targetPrice = currency === 'USD' ? 700 : currency === 'EUR' ? 650 : 50000;
+      else if (item === 'phone') targetPrice = currency === 'USD' ? 400 : currency === 'EUR' ? 380 : 30000;
+      else if (item === 'bike') targetPrice = currency === 'USD' ? 1000 : currency === 'EUR' ? 950 : 80000;
+      else if (item === 'car') targetPrice = currency === 'USD' ? 6000 : currency === 'EUR' ? 5500 : 450000;
+      else if (item === 'smartwatch') targetPrice = currency === 'USD' ? 200 : currency === 'EUR' ? 180 : 15000;
+      else targetPrice = currency === 'USD' ? 500 : currency === 'EUR' ? 450 : 40000;
+    }
+
+    const currentBalance = summary?.allTime?.netAvailableBalance || 0;
+    const monthlyIncome = currentMonthData.income || summary?.currentMonth?.monthlyIncome || 0;
+    const monthlyExpenses = currentMonthData.expenses || summary?.currentMonth?.monthlyExpenses || 0;
+    const monthlySurplus = monthlyIncome - monthlyExpenses;
+
+    const projectedSavings = Math.max(0, currentBalance) + (Math.max(0, monthlySurplus) * months);
+
+    if (monthlySurplus <= 0 && currentBalance < targetPrice) {
+      const requiredMonthly = Math.ceil((targetPrice - Math.max(0, currentBalance)) / months);
+      return {
+        reply: `Based on your current numbers (income: ${currSymbol}${monthlyIncome.toLocaleString()}, expenses: ${currSymbol}${monthlyExpenses.toLocaleString()}), you currently have a deficit or zero monthly surplus. To buy a ${item} (~${currSymbol}${targetPrice.toLocaleString()}) in ${months} months, you will need to save about ${currSymbol}${requiredMonthly.toLocaleString()}/month by reducing non-essential expenses like Food and Shopping.`,
+      };
+    }
+
+    if (projectedSavings >= targetPrice) {
+      const surplusRemaining = projectedSavings - targetPrice;
+      return {
+        reply: `Yes! Based on your current surplus of ${currSymbol}${monthlySurplus.toLocaleString()}/month and available balance of ${currSymbol}${currentBalance.toLocaleString()}, you are projected to accumulate ${currSymbol}${projectedSavings.toLocaleString()} in ${months} months. You will comfortably be able to buy a ${item} (~${currSymbol}${targetPrice.toLocaleString()}) with ${currSymbol}${surplusRemaining.toLocaleString()} to spare!`,
+      };
+    } else {
+      const shortfall = targetPrice - projectedSavings;
+      const additionalMonthlyNeeded = Math.ceil(shortfall / months);
+      return {
+        reply: `With your current monthly surplus of ${currSymbol}${monthlySurplus.toLocaleString()}, you will reach approximately ${currSymbol}${projectedSavings.toLocaleString()} in ${months} months. You will be about ${currSymbol}${shortfall.toLocaleString()} short of a ${item} (~${currSymbol}${targetPrice.toLocaleString()}). To reach it, try saving an extra ${currSymbol}${additionalMonthlyNeeded.toLocaleString()} per month.`,
+      };
+    }
+  }
+
+  // Immediate Affordability
+  if (
+    msg.includes('can i afford') ||
+    msg.includes('should i buy') ||
+    (msg.includes('can i buy') && !msg.includes('month') && !msg.includes('year'))
+  ) {
+    const amount = extractAmountFromText(msg);
+    const balance = summary?.allTime?.netAvailableBalance || 0;
+    const surplus = currentMonthData.netSavings || 0;
+
+    if (amount) {
+      if (balance >= amount && surplus >= 0) {
+        return {
+          reply: `Yes, you can afford it! You have ${currSymbol}${balance.toLocaleString()} available. Spending ${currSymbol}${amount.toLocaleString()} will leave you with ${currSymbol}${(balance - amount).toLocaleString()} in reserves.`,
+        };
+      } else if (balance >= amount) {
+        return {
+          reply: `You have enough balance (${currSymbol}${balance.toLocaleString()}) to cover ${currSymbol}${amount.toLocaleString()}, but your spending this month is currently high. Consider waiting until next month to preserve your savings buffer.`,
+        };
+      } else {
+        return {
+          reply: `No, your current balance of ${currSymbol}${balance.toLocaleString()} is not enough for ${currSymbol}${amount.toLocaleString()}. You need an additional ${currSymbol}${(amount - balance).toLocaleString()} before making this purchase.`,
+        };
+      }
+    }
+  }
+
+  // How to delete a transaction
+  if (
+    msg.includes('how do i delete') ||
+    msg.includes('how to delete') ||
+    msg.includes('how do i remove') ||
+    msg.includes('how to cancel a transaction') ||
+    msg.includes('delete a transaction') ||
+    msg.includes('delete an expense')
+  ) {
+    return {
+      reply: `You can delete any transaction right here using voice or chat! Just say or type "Delete last transaction" or "Delete ₹500 for Food", and confirm when prompted. You can also delete transactions on the Transactions page using the trash icon.`,
+    };
+  }
+
+  // Financial health status
+  if (
+    msg.includes('financial health') ||
+    msg.includes('how am i doing') ||
+    msg.includes('how is my finance') ||
+    msg.includes('financial status') ||
+    msg.includes('financial summary')
+  ) {
+    const inc = currentMonthData.income || 0;
+    const exp = currentMonthData.expenses || 0;
+    const surplus = inc - exp;
+    const rate = inc > 0 ? Math.round((Math.max(0, surplus) / inc) * 100) : 0;
+    const balance = summary?.allTime?.netAvailableBalance || 0;
+    const healthStatus = rate >= 30 ? 'Excellent' : rate >= 15 ? 'Good' : rate > 0 ? 'Moderate' : 'Needs Attention';
+
+    return {
+      reply: `Your financial health status is ${healthStatus}. This month: Income ${currSymbol}${inc.toLocaleString()}, Expenses ${currSymbol}${exp.toLocaleString()}, Net Savings ${currSymbol}${Math.max(0, surplus).toLocaleString()} (${rate}% savings rate), and Available Balance ${currSymbol}${balance.toLocaleString()}.`,
+    };
+  }
+
+  // Emergency Fund advice
+  if (
+    msg.includes('emergency fund') ||
+    msg.includes('rainy day fund') ||
+    msg.includes('emergency saving')
+  ) {
+    const monthlyExp = currentMonthData.expenses || (summary?.allTime?.allTimeExpense ? summary.allTime.allTimeExpense / 3 : 15000);
+    const threeMonth = Math.round(monthlyExp * 3);
+    const sixMonth = Math.round(monthlyExp * 6);
+    return {
+      reply: `A recommended emergency fund covers 3 to 6 months of living expenses. Based on your current monthly spending of ~${currSymbol}${Math.round(monthlyExp).toLocaleString()}, your target emergency fund should be between ${currSymbol}${threeMonth.toLocaleString()} (3 months) and ${currSymbol}${sixMonth.toLocaleString()} (6 months). Keep this in an easily accessible, liquid savings account.`,
+    };
+  }
+
+  // Dining out / food budget query
+  if (
+    msg.includes('eat out') ||
+    msg.includes('dine out') ||
+    msg.includes('order food') ||
+    msg.includes('zomato') ||
+    msg.includes('swiggy') ||
+    msg.includes('restaurant')
+  ) {
+    const foodBudget = budgets.find((b) => b.category?.toLowerCase() === 'food');
+    const foodSpent = categories.find((c) => c._id?.toLowerCase() === 'food')?.totalSpent || 0;
+    if (foodBudget) {
+      const remainingFood = Math.max(0, (foodBudget.limit || foodBudget.limitAmount || 0) - foodSpent);
+      return {
+        reply: `You have spent ${currSymbol}${foodSpent.toLocaleString()} on Food this month with ${currSymbol}${remainingFood.toLocaleString()} remaining in your Food budget. If you stay within ${currSymbol}${remainingFood.toLocaleString()}, you can enjoy dining out without breaking budget.`,
+      };
+    }
+    return {
+      reply: `You spent ${currSymbol}${foodSpent.toLocaleString()} on Food this month. Check your monthly budget and balance before ordering to ensure you maintain your savings goal.`,
     };
   }
 
@@ -304,19 +602,87 @@ export const runDeterministicAdvisor = ({
     msg.includes('latest expense') ||
     msg.includes('last expense') ||
     msg.includes('recent transactions') ||
-    msg.includes('latest transaction')
+    msg.includes('latest transaction') ||
+    msg.includes('recent entries') ||
+    msg.includes('last transaction')
   ) {
     if (recentExpenses && recentExpenses.length > 0) {
       const listStr = recentExpenses
         .slice(0, 4)
-        .map((e) => `${currSymbol}${e.amount.toLocaleString()} on ${e.category} (${e.merchantOrSource || e.category})`)
+        .map((e) => {
+          const dateStr = formatIndianDate(e.date);
+          return `${currSymbol}${e.amount.toLocaleString('en-IN')} on ${e.category} (${e.merchantOrSource || e.category})${dateStr ? ` [${dateStr}]` : ''}`;
+        })
         .join(', ');
       return {
-        reply: `Your recent expenses: ${listStr}. View all in the Transactions page.`,
+        reply: `Your recent transactions: ${listStr}. View all on the Transactions page.`,
       };
     }
     return {
-      reply: 'You have not recorded any expenses recently.',
+      reply: 'You have not recorded any transactions recently.',
+    };
+  }
+
+  // Available Balance / Account Status query
+  if (
+    msg.includes('balance') ||
+    msg.includes('how much money do i have') ||
+    msg.includes('how much money i have') ||
+    msg.includes('available money') ||
+    msg.includes('available funds') ||
+    msg.includes('net balance') ||
+    msg.includes('my funds') ||
+    msg.includes('current balance')
+  ) {
+    const netBalance = summary?.allTime?.netAvailableBalance || 0;
+    const surplus = currentMonthData.netSavings || 0;
+    const inc = currentMonthData.income || 0;
+    const exp = currentMonthData.expenses || 0;
+    return {
+      reply: `Your total available net balance is ${currSymbol}${netBalance.toLocaleString('en-IN')}. This month you earned ${currSymbol}${inc.toLocaleString('en-IN')}, spent ${currSymbol}${exp.toLocaleString('en-IN')}, and currently have ${currSymbol}${Math.max(0, surplus).toLocaleString('en-IN')} in net savings.`,
+    };
+  }
+
+  // Where did my money go / Category breakdown query
+  if (
+    msg.includes('where did my money go') ||
+    msg.includes('where is my money going') ||
+    msg.includes('spending breakdown') ||
+    msg.includes('category breakdown') ||
+    msg.includes('where am i spending') ||
+    msg.includes('spending distribution') ||
+    msg.includes('expense breakdown')
+  ) {
+    if (categories && categories.length > 0) {
+      const topList = categories
+        .slice(0, 4)
+        .map((c) => `${c._id}: ${currSymbol}${c.totalSpent.toLocaleString('en-IN')}`)
+        .join(', ');
+      return {
+        reply: `Here is where your money is going this month: ${topList}. Your highest spending category is ${categories[0]._id} (${currSymbol}${categories[0].totalSpent.toLocaleString('en-IN')}).`,
+      };
+    }
+    return {
+      reply: 'You have not recorded any category expenses for this month yet.',
+    };
+  }
+
+  // Capabilities & Help query
+  if (
+    msg.includes('what can you do') ||
+    msg.includes('help') ||
+    msg.includes('what are your features') ||
+    msg.includes('capabilities') ||
+    msg.includes('what questions can i ask') ||
+    msg.includes('how can you help') ||
+    msg.includes('what do you do')
+  ) {
+    return {
+      reply: `Here is what I can do for you:
+1. Answering Financial Questions: Ask about your available balance, remaining budget, top categories, monthly savings, recent transactions, or purchase planning (e.g., "Will I be able to buy a laptop in 6 months?").
+2. Voice & Text Transactions: Speak or type to add transactions (e.g. "Add ₹500 for food") or delete transactions (e.g. "Delete last transaction" or "Delete ₹500 for Food").
+3. Financial Planning: Get spending predictions, emergency fund targets, and tips to reduce your spending.
+Just click the microphone or type to get started!`,
     };
   }
 
@@ -519,9 +885,9 @@ export const runDeterministicAdvisor = ({
     };
   }
 
-  // General fallback
+  // General fallback when answer isn't available - proper closing answer
   return {
-    reply: `You can ask me about your income, total expenses, remaining budget, recent expenses, predictions, or how to use recurring setups.`,
+    reply: `I don't have enough financial records or details to answer that accurately right now. To help me calculate this for you, try logging your regular monthly income and expenses or setting up budgets and savings goals. If there is anything else you'd like to check—like your remaining budget, monthly spending, or purchase affordability (e.g., "Will I be able to buy a laptop in 6 months?")—feel free to ask! Have a great day managing your finances with ExpenseFlow.`,
   };
 };
 
@@ -540,7 +906,69 @@ export const chatWithAI = catchAsync(async (req, res, next) => {
   const cleanMsg = message.trim();
   const lowerMsg = cleanMsg.toLowerCase();
 
-  // 0. Check if user typed a transaction entry command:
+  // 0a. Check if user typed a transaction deletion command:
+  // e.g. "Delete last transaction", "Delete ₹500 food", "Delete transaction", "Remove last expense"
+  const isDeleteCommand =
+    /\b(delete|remove|cancel)\b/i.test(lowerMsg) &&
+    (/\b(transaction|expense|income|entry|last|recent|food|transport|shopping|bills|rent|\d+)\b/i.test(lowerMsg) || /^(delete|remove)\b/i.test(lowerMsg));
+
+  if (isDeleteCommand) {
+    const amount = extractAmountFromText(lowerMsg);
+    const category = detectCategoryFromText(lowerMsg);
+    let targetTx = null;
+
+    if (amount) {
+      const query = { userId, amount };
+      if (category !== 'Other') {
+        query.category = category;
+      }
+      targetTx = await Transaction.findOne(query).sort('-createdAt');
+    }
+
+    if (!targetTx && category !== 'Other') {
+      targetTx = await Transaction.findOne({ userId, category }).sort('-createdAt');
+    }
+
+    if (!targetTx) {
+      targetTx = await Transaction.findOne({ userId }).sort('-createdAt');
+    }
+
+    if (!targetTx) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          reply: "I couldn't find any recent transaction in your records to delete. Please check your Transactions page or specify the amount and category (e.g., 'Delete ₹500 for Food').",
+        },
+      });
+    }
+
+    const currSymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '₹';
+    const indianDate = formatIndianDate(targetTx.date);
+    const confirmPrompt = `Delete ${currSymbol}${targetTx.amount.toLocaleString('en-IN')} ${targetTx.category} transaction (${targetTx.merchantOrSource || targetTx.category})${indianDate ? ` from ${indianDate}` : ''}?`;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        isTransactionProposal: true,
+        isDeleteProposal: true,
+        type: 'DELETE_PROPOSAL',
+        action: 'CONFIRM_DELETE',
+        confirmationPrompt: confirmPrompt,
+        transactionToDelete: {
+          id: targetTx._id,
+          amount: targetTx.amount,
+          category: targetTx.category,
+          type: targetTx.type,
+          merchantOrSource: targetTx.merchantOrSource || targetTx.category,
+          date: targetTx.date,
+          dateFormatted: indianDate,
+        },
+        reply: `Found transaction: ${currSymbol}${targetTx.amount.toLocaleString('en-IN')} for ${targetTx.category} (${indianDate}). Say "Confirm" or click the button below to delete it.`,
+      },
+    });
+  }
+
+  // 0b. Check if user typed a transaction entry command:
   // e.g. "Add ₹500 for food", "I spent ₹300 on transport", "I received ₹30,000 salary"
   const hasTxKeywords =
     /^(add|record|log|create|i spent|spent|paid|received|earned|i received|i earned)\b/i.test(lowerMsg) ||
@@ -702,12 +1130,13 @@ export const parseVoiceTransaction = catchAsync(async (req, res, next) => {
     }
 
     const currSymbol = userCurrency === 'USD' ? '$' : userCurrency === 'EUR' ? '€' : '₹';
+    const indianDate = formatIndianDate(targetTx.date);
     return res.status(200).json({
       success: true,
       data: {
         type: 'DELETE_PROPOSAL',
         action: 'CONFIRM_DELETE',
-        confirmationPrompt: `Delete ${currSymbol}${targetTx.amount.toLocaleString()} ${targetTx.category} transaction?`,
+        confirmationPrompt: `Delete ${currSymbol}${targetTx.amount.toLocaleString('en-IN')} ${targetTx.category} transaction (${targetTx.merchantOrSource || targetTx.category})${indianDate ? ` from ${indianDate}` : ''}?`,
         transactionToDelete: {
           id: targetTx._id,
           amount: targetTx.amount,
@@ -715,6 +1144,7 @@ export const parseVoiceTransaction = catchAsync(async (req, res, next) => {
           type: targetTx.type,
           merchantOrSource: targetTx.merchantOrSource || targetTx.category,
           date: targetTx.date,
+          dateFormatted: indianDate,
         },
       },
     });

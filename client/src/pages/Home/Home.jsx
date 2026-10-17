@@ -8,7 +8,6 @@ import {
   Target,
   Bot,
   Sparkles,
-  ShieldCheck,
 } from 'lucide-react';
 import Button from '../../components/common/Button';
 import HeroStockPng from '../../assets/hero-stock.png';
@@ -23,7 +22,7 @@ export default function Home() {
           <div className="ef-hero-content">
             <div className="ef-hero-pill">
               <Sparkles size={14} />
-              <span>Secure AI-Powered Personal Finance Management</span>
+              <span>Smart AI-Powered Personal Finance Management</span>
             </div>
 
             <h1 className="ef-hero-title">

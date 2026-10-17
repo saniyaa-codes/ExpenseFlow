@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, TrendingUp, Search, Trash2, Edit2, Repeat } from 'lucide-react';
+import { Plus, TrendingUp, Trash2, Edit2, Repeat } from 'lucide-react';
 import api from '../../services/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import Button from '../../components/common/Button';
@@ -17,7 +17,6 @@ export default function Income() {
   const [totalIncome, setTotalIncome] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [recurringPlan, setRecurringPlan] = useState(null);
-  const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -38,7 +37,7 @@ export default function Income() {
     setIsLoading(true);
     try {
       const res = await api.get('/transactions', {
-        params: { type: 'income', search: search.trim() || undefined },
+        params: { type: 'income' },
       });
       if (res.success) {
         const txs = res.data.transactions || [];
@@ -58,7 +57,7 @@ export default function Income() {
       if (res.success && res.data?.plan) {
         setRecurringPlan(res.data.plan);
       }
-    } catch (err) {
+    } catch {
       // Non-critical, ignore
     }
   };
@@ -73,7 +72,7 @@ export default function Income() {
     };
     window.addEventListener('transaction-updated', handleTxUpdate);
     return () => window.removeEventListener('transaction-updated', handleTxUpdate);
-  }, [search]);
+  }, []);
 
   const [formError, setFormError] = useState('');
 
@@ -244,7 +243,7 @@ export default function Income() {
                 {incomes.map((tx) => (
                   <tr key={tx._id}>
                     <td className="ef-col-date">
-                      {new Date(tx.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(tx.date).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                     </td>
                     <td className="ef-col-desc">
                       <strong>{tx.merchantOrSource || tx.category}</strong>
